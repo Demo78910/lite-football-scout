@@ -14,7 +14,7 @@
 <section id="history" class="hidden"><div class="card"><h2>ข้อมูลที่บันทึกในเครื่อง</h2><div id="summary" class="hint"></div><div id="saved"></div><button class="btn primary" id="copyAll">คัดลอกข้อมูลทั้งหมดให้ AI วิเคราะห์</button><button class="btn secondary" id="export">ส่งออกข้อมูลสำรอง JSON</button><button class="btn danger" id="wipe">ลบข้อมูลทั้งหมด</button></div></section>
 <div class="foot">โปรแกรมแข่งดึงตรงจาก API-Football · ราคาบอลแสดงเมื่อ API มีข้อมูลเท่านั้น · ไม่มีการรับประกันผล</div></main>
 <script>
-const KEY="lite-scout-v22";let db=JSON.parse(localStorage.getItem(KEY)||'{"raw":"","picks":[],"odds":[]}');const $=id=>document.getElementById(id),v=id=>$(id).value.trim();
+const KEY="lite-scout-v21";let db=JSON.parse(localStorage.getItem(KEY)||'{"raw":"","picks":[],"odds":[]}');const $=id=>document.getElementById(id),v=id=>$(id).value.trim();
 function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}function go(t){["search","picks","odds","history"].forEach(x=>$(x).classList.toggle("hidden",x!==t));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));render()}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.tab));
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
