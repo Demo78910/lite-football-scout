@@ -43,7 +43,7 @@ button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
 </style></head><body><main>
 <header class="head"><div class="eyebrow">PERSONAL FOOTBALL INTELLIGENCE</div><h1>⚽ LITE FOOTBALL SCOUT</h1><div class="muted">AUTO DATA · IN-APP POISSON MODEL · PWA 3.0</div></header>
 <nav class="nav"><button class="active" data-tab="search">ค้นหา</button><button data-tab="picks">คู่แนะนำ</button><button data-tab="odds">กรอกราคา</button><button data-tab="history">ประวัติ</button></nav>
-<section id="search"><div class="card hidden"><h2>เชื่อม API-Football โดยตรง</h2><p class="hint">ดึงโปรแกรมแข่งจากผู้ให้บริการข้อมูลฟุตบอลโดยตรง ใช้ API Key ฟรีของคุณ คีย์จะเก็บในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ถูกบันทึกลง GitHub</p><label>API Key</label><input id="apiKey" type="password" autocomplete="off" placeholder="วาง API-Football key ที่นี่"><div class="grid"><button class="btn secondary" id="saveApiKey">บันทึก API Key</button><button class="btn secondary" id="forgetApiKey">ลบ API Key</button></div><p class="hint">สมัครรับคีย์ฟรี: <a href="https://dashboard.api-football.com/register" target="_blank" rel="noopener">API-Football Dashboard</a> · โควตาฟรี 100 requests/วัน ตามแพ็กเกจปัจจุบัน</p><button class="btn primary" id="loadFixtures">ดึงโปรแกรมแข่งจาก API ตามวันที่เลือก</button><div id="apiStatus" class="hint">ยังไม่ได้เชื่อม API</div><div id="apiFixtures"></div></div><div class="card"><h2>ข้อมูลอัตโนมัติจาก GitHub Actions</h2><p class="hint">ระบบจะอ่าน snapshot ล่าสุดที่ GitHub Actions อัปเดตทุก 6 ชั่วโมง โดยไม่ต้องใช้ API Key ในหน้าเว็บ</p><button class="btn primary" id="loadSnapshot">โหลดข้อมูลล่าสุด</button><div id="snapshotStatus" class="hint">ยังไม่ได้โหลดข้อมูลอัตโนมัติ</div><div id="snapshotMatches"></div><button class="btn secondary hidden" id="copySnapshotPrompt" disabled>คัดลอกข้อมูลพร้อมคำสั่งให้ GPT วิเคราะห์</button><p class="hint">ข้อมูลราคาเป็นราคาก่อนแข่งที่ API มีให้ ไม่ใช่ราคาสดทุกวินาที และอาจไม่มีครบทุกคู่</p></div><div class="card"><h2>วิเคราะห์และสรุปผลในเว็บ</h2><p class="hint">ใช้ฟอร์ม 5 นัดล่าสุดที่ดึงได้ + Poisson model + ราคาตลาดที่มีใน API คำนวณในอุปกรณ์นี้ ไม่เรียก GPT API</p><button class="btn primary" id="runLocalAnalysis" disabled>วิเคราะห์ใหม่</button><div id="analysisStatus" class="hint">โหลด snapshot ก่อนเริ่มวิเคราะห์</div><div id="analysisResults"></div></div><div class="card hidden"><h2>เลือกหัวข้อวิเคราะห์</h2><p class="hint">เลือกได้หลายข้อ ระบบจะสร้างคำสั่งให้ ChatGPT ค้นหาคู่ตามเกณฑ์ที่เลือก</p><div class="checks" id="criteria">
+<section id="search"><div class="card hidden"><h2>เชื่อม API-Football โดยตรง</h2><p class="hint">ดึงโปรแกรมแข่งจากผู้ให้บริการข้อมูลฟุตบอลโดยตรง ใช้ API Key ฟรีของคุณ คีย์จะเก็บในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ถูกบันทึกลง GitHub</p><label>API Key</label><input id="apiKey" type="password" autocomplete="off" placeholder="วาง API-Football key ที่นี่"><div class="grid"><button class="btn secondary" id="saveApiKey">บันทึก API Key</button><button class="btn secondary" id="forgetApiKey">ลบ API Key</button></div><p class="hint">สมัครรับคีย์ฟรี: <a href="https://dashboard.api-football.com/register" target="_blank" rel="noopener">API-Football Dashboard</a> · โควตาฟรี 100 requests/วัน ตามแพ็กเกจปัจจุบัน</p><button class="btn primary" id="loadFixtures">ดึงโปรแกรมแข่งจาก API ตามวันที่เลือก</button><div id="apiStatus" class="hint">ยังไม่ได้เชื่อม API</div><div id="apiFixtures"></div></div><div class="card"><h2>ศูนย์ข้อมูลการแข่งขัน · DATA CENTER</h2><p class="hint">แหล่งหลัก API-Football · อัปเดตอัตโนมัติผ่าน GitHub Actions วันละ 2 รอบ · เวลาไทย</p><div class="grid"><div><label for="snapshotDate">วันที่แข่งขัน</label><input id="snapshotDate" type="date"></div><div><label for="snapshotLimit">จำนวนคู่ที่แสดง</label><select id="snapshotLimit"><option value="10">10 คู่</option><option value="20" selected>20 คู่</option><option value="50">50 คู่</option><option value="100">100 คู่</option></select></div></div><label for="snapshotLeague">ค้นหาลีกหรือประเทศ</label><input id="snapshotLeague" placeholder="เช่น Premier League, England"><div class="grid"><button class="btn primary" id="loadSnapshot">โหลดข้อมูลล่าสุด</button><button class="btn secondary" id="showAllSnapshot">แสดงทุกลีก</button></div><div id="snapshotStatus" class="hint">กำลังเตรียมศูนย์ข้อมูล…</div><div id="snapshotMatches"></div><button class="btn secondary hidden" id="copySnapshotPrompt" disabled>คัดลอกข้อมูลที่เลือกให้ AI วิเคราะห์</button><p class="hint">ราคาเป็นราคา Pre-match ไม่ใช่ราคาสด และอาจไม่มีทุกคู่ · สถิติสด/ตัวจริง/ผู้เล่นบาดเจ็บขึ้นกับความครอบคลุมของลีกและเวลาที่ดึงข้อมูล</p></div><div class="card"><h2>วิเคราะห์และสรุปผลในเว็บ</h2><p class="hint">ใช้ฟอร์ม 5 นัดล่าสุดที่ดึงได้ + Poisson model + ราคาตลาดที่มีใน API คำนวณในอุปกรณ์นี้ ไม่เรียก GPT API</p><button class="btn primary" id="runLocalAnalysis" disabled>วิเคราะห์ใหม่</button><div id="analysisStatus" class="hint">โหลด snapshot ก่อนเริ่มวิเคราะห์</div><div id="analysisResults"></div></div><div class="card hidden"><h2>เลือกหัวข้อวิเคราะห์</h2><p class="hint">เลือกได้หลายข้อ ระบบจะสร้างคำสั่งให้ ChatGPT ค้นหาคู่ตามเกณฑ์ที่เลือก</p><div class="checks" id="criteria">
 <label class="check"><input type="checkbox" value="ฟอร์ม 5 นัดล่าสุด" checked>ฟอร์ม 5 นัดล่าสุด</label><label class="check"><input type="checkbox" value="สถิติยิงและเสียประตู" checked>สถิติยิงและเสียประตู</label><label class="check"><input type="checkbox" value="สถิติพบกัน H2H" >สถิติพบกัน H2H</label><label class="check"><input type="checkbox" value="ผู้เล่นบาดเจ็บ/ติดโทษแบน" checked>ผู้เล่นบาดเจ็บ/ติดโทษแบน</label><label class="check"><input type="checkbox" value="แรงจูงใจและตารางคะแนน" >แรงจูงใจและตารางคะแนน</label><label class="check"><input type="checkbox" value="ฟอร์มเหย้า/เยือน" >ฟอร์มเหย้า/เยือน</label><label class="check"><input type="checkbox" value="สถิติสูงต่ำและ BTTS" >สถิติสูงต่ำและ BTTS</label><label class="check"><input type="checkbox" value="โปรแกรมแข่งและความล้า" >โปรแกรมแข่งและความล้า</label><label class="check"><input type="checkbox" value="สภาพอากาศและสนาม" >สภาพอากาศและสนาม</label><label class="check"><input type="checkbox" value="แนวโน้มราคา (ถ้าตรวจสอบได้)" >แนวโน้มราคา (ถ้าตรวจสอบได้)</label>
 </div><div class="grid"><div><label>วันที่แข่ง</label><input id="date" type="date"></div><div><label>จำนวนคู่สูงสุด</label><select id="limit"><option>3</option><option selected>5</option><option>7</option><option>10</option></select></div></div><label>ลีกที่สนใจ (เว้นว่าง = ทุกลีก)</label><input id="leagues" placeholder="ทุกลีก / Premier League"><label>เงื่อนไขเพิ่ม</label><textarea id="extra" placeholder="เช่น เอาเฉพาะคู่ที่ยังไม่เริ่มและข้อมูลครบ"></textarea><button class="btn primary" id="build">สร้างคำสั่งค้นหาคู่แนะนำ</button><div id="promptBox" class="hidden"><label>คำสั่งที่สร้างแล้ว</label><textarea id="prompt" readonly></textarea><button class="btn secondary" id="copyPrompt">คัดลอกคำสั่ง</button></div></div>
 <div class="card hidden"><h2>นำผลจาก ChatGPT เข้าระบบ</h2><p class="hint">หลัง ChatGPT ค้นหาและคัดคู่แล้ว ให้วางคำตอบไว้ที่นี่</p><textarea id="importText" placeholder="วางรายชื่อคู่แนะนำและเหตุผลจาก ChatGPT"></textarea><button class="btn primary" id="import">บันทึกคู่แนะนำ</button></div></section>
@@ -87,18 +87,42 @@ function snapshotOddsFor(fixtureId){
  if(!latestSnapshot||!Array.isArray(latestSnapshot.odds))return [];
  return latestSnapshot.odds.filter(o=>Number(o.fixture?.id||o.fixture_id||o.fixtureId)===Number(fixtureId));
 }
+function selectedSnapshotFixtures(){
+ const date=v("snapshotDate"),q=v("snapshotLeague").toLocaleLowerCase();
+ const cap=Math.max(1,parseInt(v("snapshotLimit"),10)||20);
+ return (latestSnapshot?.fixtures||[])
+  .filter(x=>!date||(x.fixture?.date||"").slice(0,10)===date)
+  .filter(x=>!q||((x.league?.name||"")+" "+(x.league?.country||"")).toLocaleLowerCase().includes(q))
+  .filter(x=>!["CANC","PST","ABD","AWD","WO"].includes(x.fixture?.status?.short))
+  .sort((a,b)=>(a.fixture?.date||"").localeCompare(b.fixture?.date||""))
+  .slice(0,cap);
+}
+function fixtureDetailSummary(id){
+ const d=latestSnapshot?.fixture_details?.[String(id)];
+ if(!d)return "ยังไม่มีรายละเอียดเชิงลึกในรอบนี้";
+ const labels=[];
+ if(d.predictions?.length)labels.push("มี Prediction");
+ if(d.injuries?.length)labels.push("มีข้อมูลผู้เล่น");
+ if(d.lineups?.length)labels.push("มีรายชื่อตัวจริง");
+ if(d.statistics?.length)labels.push("มีสถิติการแข่งขัน");
+ return labels.length?labels.join(" · "):"ตรวจแล้ว แต่ผู้ให้บริการยังไม่มีรายละเอียด";
+}
 function renderSnapshot(){
  if(!latestSnapshot)return;
- let q=v("leagues").toLocaleLowerCase();
- let cap=Math.max(1,parseInt(v("limit"),10)||5);
- let rows=(latestSnapshot.fixtures||[]).filter(x=>["NS","TBD"].includes(x.fixture?.status?.short))
- .filter(x=>!q||((x.league?.name||"")+" "+(x.league?.country||"")).toLocaleLowerCase().includes(q))
- .slice(0,cap);
+ const rows=selectedSnapshotFixtures();
  $("snapshotMatches").innerHTML=rows.length?rows.map(x=>{
-  let f=x.fixture||{},t=x.teams||{},l=x.league||{},od=snapshotOddsFor(f.id);
-  return '<div class="match"><span class="tag">'+esc(l.name||"ไม่ทราบลีก")+' · '+esc(f.status?.short||"")+'</span><div><b>'+esc(t.home?.name||"?")+'</b> vs <b>'+esc(t.away?.name||"?")+'</b></div><div class="muted">'+esc(f.date?new Date(f.date).toLocaleString("th-TH",{timeZone:"Asia/Bangkok"}):"ไม่ระบุเวลา")+' · Fixture '+esc(f.id||"")+'</div><div class="muted">ข้อมูลราคา: '+(od.length?"พบ "+od.length+" รายการ":"ยังไม่มีราคาใน snapshot")+'</div></div>';
- }).join(""):"<p class='hint'>ไม่พบคู่ที่ยังไม่เริ่มตามตัวกรอง</p>";
- $("snapshotStatus").textContent="อัปเดตล่าสุด "+(latestSnapshot.fetched_at||"ไม่ทราบเวลา")+" · "+(latestSnapshot.fixtures||[]).length+" คู่ · ราคา "+(latestSnapshot.odds||[]).length+" รายการ · โควตาคงเหลือ "+(latestSnapshot.quota_remaining??"ไม่ระบุ")+" · "+(latestSnapshot.errors||[]).length+" ข้อผิดพลาด";
+  const f=x.fixture||{},t=x.teams||{},l=x.league||{},od=snapshotOddsFor(f.id);
+  const formH=latestSnapshot.team_form?.[String(t.home?.id)]||[];
+  const formA=latestSnapshot.team_form?.[String(t.away?.id)]||[];
+  const detail=latestSnapshot.fixture_details?.[String(f.id)];
+  const quality=latestSnapshot.data_quality?.[String(f.id)];
+  const status=f.status?.short||"";
+  const price=od.length?"มีราคาในข้อมูล "+od.length+" ชุด":"ยังไม่มีราคา";
+  const d=new Date(f.date||"");
+  const when=f.date?d.toLocaleString("th-TH",{timeZone:"Asia/Bangkok",dateStyle:"medium",timeStyle:"short"}):"ไม่ระบุเวลา";
+  return '<div class="match"><span class="tag">'+esc(l.name||"ไม่ทราบลีก")+' · '+esc(l.country||"")+' · '+esc(status)+'</span><div><b>'+esc(t.home?.name||"?")+'</b> vs <b>'+esc(t.away?.name||"?")+'</b></div><div class="muted">'+esc(when)+' · Fixture '+esc(f.id||"")+'</div><div class="muted">'+esc(price)+' · ฟอร์ม '+formH.length+'/5 : '+formA.length+'/5</div><div class="muted">'+esc(fixtureDetailSummary(f.id))+'</div>'+(quality?'<div class="muted">รายละเอียดที่มี '+quality.details_available+'/'+quality.details_checked+' หมวด</div>':'')+'</div>';
+ }).join(""):"<p class='hint'>ไม่พบคู่ในวันที่หรือตัวกรองที่เลือก</p>";
+ $("snapshotStatus").textContent="อัปเดต "+(latestSnapshot.fetched_at||"ไม่ทราบเวลา")+" · วันที่ในชุดข้อมูล "+(latestSnapshot.dates||[]).join(", ")+" · ทั้งหมด "+(latestSnapshot.fixtures||[]).length+" คู่ · แสดง "+rows.length+" คู่ · ราคา "+(latestSnapshot.odds||[]).length+" รายการ · ฟอร์ม "+Object.keys(latestSnapshot.team_form||{}).length+" ทีม · โควตาคงเหลือ "+(latestSnapshot.quota_remaining??"ไม่ระบุ")+" · คำขอผิดพลาด "+(latestSnapshot.errors||[]).length;
  $("copySnapshotPrompt").disabled=rows.length===0;
  $("runLocalAnalysis").disabled=rows.length===0;
  window.snapshotPromptData={rows};
@@ -218,5 +242,7 @@ function renderLocalAnalysis(){
 }
 $("runLocalAnalysis").onclick=renderLocalAnalysis;
 
+const todayBangkok=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Bangkok",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+$("snapshotDate").value=todayBangkok;
 if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});render();$("loadSnapshot").click();
 </script></body></html>
