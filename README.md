@@ -1,4 +1,4 @@
-# LITE FOOTBALL SCOUT — PWA 2.2
+# LITE FOOTBALL SCOUT — PWA 3.1
 
 ## เชื่อม API-Football โดยตรง
 1. สมัครบัญชีฟรีที่ https://dashboard.api-football.com/register
@@ -42,4 +42,4 @@ The public snapshot will be written to `data/football.json`. The web app reads i
 - API-Football Free currently lists 100 requests/day; the workflow can use up to 20 calls per run and runs twice daily (typically up to 40 calls/day).
 - Pre-match odds are not guaranteed for every fixture or league. API-Football documents odds refreshes about every 3 hours and coverage varying by competition/bookmaker.
 - Thscore99 is a secondary manual verification source; this workflow does not scrape it. Automated scraping may be blocked or prohibited by the site.
-- The in-app model is a lightweight Poisson screening model based on the latest five completed matches available for each team. It is not a full professional model: it does not adjust for opponent strength, confirmed lineups, injuries, tactical matchups or weather. Picks require odds and a positive model edge; missing data leads to NO BET.
+- The in-app model is a lightweight Poisson screening model based on the latest five completed matches available for each team. The Free-plan form fetch avoids the unsupported `last` query parameter and filters completed matches from a date range. It is not a full professional model: it does not adjust for opponent strength, confirmed lineups, injuries, tactical matchups or weather. Picks require odds and a positive model edge; missing data leads to NO BET.
