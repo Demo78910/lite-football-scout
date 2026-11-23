@@ -27,7 +27,7 @@
 
 
 ## Automated data refresh (free setup)
-The repository includes a GitHub Actions workflow that refreshes today's and tomorrow's fixtures and available pre-match odds every 6 hours. It uses the API-Football free quota conservatively (up to 4 dates/endpoint calls per run; normally 16 calls/day).
+The repository includes a GitHub Actions workflow that refreshes today's and tomorrow's fixtures, available pre-match odds, and last-five-match form for up to 16 teams every 12 hours. This is normally up to 20 requests per run (about 40/day), within the stated 100 requests/day free quota, though API coverage and actual responses can vary.
 
 ### One-time setup on iPhone
 1. Open the repository: https://github.com/Demo78910/lite-football-scout
@@ -36,10 +36,10 @@ The repository includes a GitHub Actions workflow that refreshes today's and tom
 4. Value: paste the replacement API-Football key. Do not paste it into chat or commit it to files.
 5. Save. Open Actions > Update football data > Run workflow for the first refresh.
 
-The public snapshot will be written to `data/football.json`. Do not put the API key in this JSON or in the frontend.
+The public snapshot will be written to `data/football.json`. The web app reads it and runs an in-browser Poisson model, implied-probability and expected-value screening locally; it does not call GPT or any paid AI API. Do not put the API key in this JSON or in the frontend.
 
 ### Important limits
-- API-Football Free currently lists 100 requests/day; the workflow uses at most 4 calls per run and runs every 6 hours (typically up to 16 calls/day).
+- API-Football Free currently lists 100 requests/day; the workflow can use up to 20 calls per run and runs twice daily (typically up to 40 calls/day).
 - Pre-match odds are not guaranteed for every fixture or league. API-Football documents odds refreshes about every 3 hours and coverage varying by competition/bookmaker.
 - Thscore99 is a secondary manual verification source; this workflow does not scrape it. Automated scraping may be blocked or prohibited by the site.
-- GPT analysis is not invoked automatically: free GitHub Actions can collect and publish data, but calling a paid GPT API is not part of a $0 setup. Use the app's copy-for-ChatGPT action to pass the latest snapshot into ChatGPT.
+- The in-app model is a lightweight Poisson screening model based on the latest five completed matches available for each team. It is not a full professional model: it does not adjust for opponent strength, confirmed lineups, injuries, tactical matchups or weather. Picks require odds and a positive model edge; missing data leads to NO BET.
