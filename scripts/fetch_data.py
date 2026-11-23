@@ -10,6 +10,8 @@ TZ = ZoneInfo("Asia/Bangkok")
 KEY = os.environ.get("API_FOOTBALL_KEY", "").strip()
 OUT = Path("data/football.json")
 MAX_FORM_TEAMS = 16
+MAX_DETAIL_FIXTURES = 5
+DETAIL_ENDPOINTS = ("statistics", "injuries", "predictions", "lineups")
 
 if not KEY:
     print("Missing API_FOOTBALL_KEY secret", file=sys.stderr); sys.exit(1)
@@ -31,7 +33,7 @@ dates = [(now + timedelta(days=i)).date().isoformat() for i in (0, 1)]
 snapshot = {
     "app":"LITE FOOTBALL SCOUT","schema_version":2,"timezone":"Asia/Bangkok",
     "fetched_at":now.isoformat(),"dates":dates,"fixtures":[],"odds":[],
-    "team_form":{},"errors":[],"quota_remaining":None,
+    "team_form":{},"fixture_details":{},"data_quality":{},"errors":[],"quota_remaining":None,
     "sources":["API-Football v3"]
 }
 remaining_values=[]
@@ -58,18 +60,31 @@ for item in snapshot["fixtures"]:
         seen.add(fid); unique.append(item)
 snapshot["fixtures"]=sorted(unique,key=lambda x:((x.get("fixture") or {}).get("date") or ""))
 
-# Fetch a 90-day date window per team, then select the five latest completed
-# matches locally. The Free plan does not allow the API "last" parameter.
+# Select form teams from fixtures with available odds first, then fill the
+# remaining slots in kickoff order. The Free plan does not allow "last".
+odds_fixture_ids={
+    (row.get("fixture") or {}).get("id")
+    for row in snapshot["odds"]
+    if (row.get("fixture") or {}).get("id")
+}
+ordered_fixtures=sorted(
+    snapshot["fixtures"],
+    key=lambda row: (
+        0 if ((row.get("fixture") or {}).get("id") in odds_fixture_ids) else 1,
+        ((row.get("fixture") or {}).get("date") or "")
+    )
+)
 team_ids=[]
-for match in snapshot["fixtures"]:
+for match in ordered_fixtures:
     teams=match.get("teams") or {}
     for side in ("home","away"):
         tid=(teams.get(side) or {}).get("id")
-        if tid and tid not in team_ids: team_ids.append(tid)
+        if tid and tid not in team_ids:
+            team_ids.append(tid)
         if len(team_ids)>=MAX_FORM_TEAMS: break
     if len(team_ids)>=MAX_FORM_TEAMS: break
 
-form_from=(now-timedelta(days=90)).date().isoformat()
+form_from=(now-timedelta(days=120)).date().isoformat()
 form_to=(now-timedelta(days=1)).date().isoformat()
 finished={"FT","AET","PEN"}
 for tid in team_ids:
@@ -92,6 +107,40 @@ for tid in team_ids:
         snapshot["team_form"][str(tid)]=completed[:5]
     except Exception as exc:
         snapshot["errors"].append(f"team form {tid}: {exc}")
+
+# Enrich a small, deterministic shortlist to stay within the Free plan's
+# 100 requests/day budget. Five fixtures x four endpoints = 20 calls/run.
+# With two scheduled runs plus the 20 base calls, expected use is ~80/day.
+detail_fixtures=[]
+seen_detail=set()
+for match in ordered_fixtures:
+    fid=(match.get("fixture") or {}).get("id")
+    if fid and fid not in seen_detail:
+        seen_detail.add(fid)
+        detail_fixtures.append(match)
+    if len(detail_fixtures)>=MAX_DETAIL_FIXTURES: break
+
+for match in detail_fixtures:
+    fixture=match.get("fixture") or {}
+    fid=fixture.get("id")
+    detail={"fixture_id":fid,"fetched_at":now.isoformat(),"statistics":[],
+            "injuries":[],"predictions":[],"lineups":[],"available":{}}
+    for endpoint in DETAIL_ENDPOINTS:
+        try:
+            rows,remaining=get(endpoint,{"fixture":fid})
+            record_remaining(remaining)
+            detail[endpoint]=rows
+            detail["available"][endpoint]=bool(rows)
+        except Exception as exc:
+            detail["available"][endpoint]=False
+            snapshot["errors"].append(f"{endpoint} fixture {fid}: {exc}")
+    snapshot["fixture_details"][str(fid)]=detail
+    snapshot["data_quality"][str(fid)]={
+        "form_home":len(snapshot["team_form"].get(str((match.get("teams") or {}).get("home",{}).get("id")),[])),
+        "form_away":len(snapshot["team_form"].get(str((match.get("teams") or {}).get("away",{}).get("id")),[])),
+        "details_available":sum(1 for value in detail["available"].values() if value),
+        "details_checked":len(DETAIL_ENDPOINTS)
+    }
 
 if remaining_values: snapshot["quota_remaining"]=min(remaining_values)
 OUT.parent.mkdir(parents=True,exist_ok=True)
