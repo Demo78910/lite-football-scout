@@ -3,7 +3,7 @@ name: Update football data
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "23 */12 * * *"
 
 permissions:
   contents: write
@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Fetch fixtures and pre-match odds
+      - name: Fetch fixtures, odds and recent team form
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         run: python scripts/fetch_data.py
