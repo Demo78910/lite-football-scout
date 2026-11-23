@@ -58,7 +58,8 @@ for item in snapshot["fixtures"]:
         seen.add(fid); unique.append(item)
 snapshot["fixtures"]=sorted(unique,key=lambda x:((x.get("fixture") or {}).get("date") or ""))
 
-# Fetch last five completed fixtures for up to 16 unique teams (8 matches).
+# Fetch a 90-day date window per team, then select the five latest completed
+# matches locally. The Free plan does not allow the API "last" parameter.
 team_ids=[]
 for match in snapshot["fixtures"]:
     teams=match.get("teams") or {}
@@ -68,11 +69,27 @@ for match in snapshot["fixtures"]:
         if len(team_ids)>=MAX_FORM_TEAMS: break
     if len(team_ids)>=MAX_FORM_TEAMS: break
 
+form_from=(now-timedelta(days=90)).date().isoformat()
+form_to=(now-timedelta(days=1)).date().isoformat()
+finished={"FT","AET","PEN"}
 for tid in team_ids:
     try:
-        rows,remaining=get("fixtures",{"team":tid,"last":5,"timezone":"Asia/Bangkok"})
+        rows,remaining=get("fixtures",{
+            "team":tid,"from":form_from,"to":form_to,
+            "timezone":"Asia/Bangkok"
+        })
         record_remaining(remaining)
-        snapshot["team_form"][str(tid)]=rows
+        completed=[
+            row for row in rows
+            if ((row.get("fixture") or {}).get("status") or {}).get("short") in finished
+            and (row.get("goals") or {}).get("home") is not None
+            and (row.get("goals") or {}).get("away") is not None
+        ]
+        completed.sort(
+            key=lambda row: ((row.get("fixture") or {}).get("date") or ""),
+            reverse=True
+        )
+        snapshot["team_form"][str(tid)]=completed[:5]
     except Exception as exc:
         snapshot["errors"].append(f"team form {tid}: {exc}")
 
