@@ -1,0 +1,35 @@
+name: Validate LITE FOOTBALL SCOUT
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate Python data pipeline
+        run: python -m py_compile scripts/fetch_data.py
+      - name: Validate browser JavaScript syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path("index.html").read_text(encoding="utf-8")
+          start = html.rfind("<script>") + len("<script>")
+          end = html.find("</script>", start)
+          if start < len("<script>") or end < 0:
+              raise SystemExit("Inline application script was not found")
+          Path("/tmp/lite-scout-app.js").write_text(html[start:end], encoding="utf-8")
+          PY
+          node --check /tmp/lite-scout-app.js
