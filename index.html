@@ -5,7 +5,7 @@
 </style></head><body><main>
 <header class="head"><div class="eyebrow">PERSONAL FOOTBALL INTELLIGENCE</div><h1>⚽ LITE FOOTBALL SCOUT</h1><div class="muted">AI RECOMMENDATION · MANUAL ODDS · PWA 2.1</div></header>
 <nav class="nav"><button class="active" data-tab="search">ค้นหา</button><button data-tab="picks">คู่แนะนำ</button><button data-tab="odds">กรอกราคา</button><button data-tab="history">ประวัติ</button></nav>
-<section id="search"><div class="card"><h2>เชื่อม API-Football โดยตรง</h2><p class="hint">ดึงโปรแกรมแข่งจากผู้ให้บริการข้อมูลฟุตบอลโดยตรง ใช้ API Key ฟรีของคุณ คีย์จะเก็บในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ถูกบันทึกลง GitHub</p><label>API Key</label><input id="apiKey" type="password" autocomplete="off" placeholder="วาง API-Football key ที่นี่"><div class="grid"><button class="btn secondary" id="saveApiKey">บันทึก API Key</button><button class="btn secondary" id="forgetApiKey">ลบ API Key</button></div><p class="hint">สมัครรับคีย์ฟรี: <a href="https://dashboard.api-football.com/register" target="_blank" rel="noopener">API-Football Dashboard</a> · โควตาฟรี 100 requests/วัน ตามแพ็กเกจปัจจุบัน</p><button class="btn primary" id="loadFixtures">ดึงโปรแกรมแข่งจาก API ตามวันที่เลือก</button><div id="apiStatus" class="hint">ยังไม่ได้เชื่อม API</div><div id="apiFixtures"></div></div><div class="card"><h2>ข้อมูลอัตโนมัติจาก GitHub Actions</h2><p class="hint">ระบบจะอ่าน snapshot ล่าสุดที่ GitHub Actions อัปเดตทุก 6 ชั่วโมง โดยไม่ต้องใช้ API Key ในหน้าเว็บ</p><button class="btn primary" id="loadSnapshot">โหลดข้อมูลล่าสุด</button><div id="snapshotStatus" class="hint">ยังไม่ได้โหลดข้อมูลอัตโนมัติ</div><div id="snapshotMatches"></div><button class="btn secondary" id="copySnapshotPrompt" disabled>คัดลอกข้อมูลพร้อมคำสั่งให้ GPT วิเคราะห์</button><p class="hint">ข้อมูลราคาเป็นราคาก่อนแข่งที่ API มีให้ ไม่ใช่ราคาสดทุกวินาที และอาจไม่มีครบทุกคู่</p></div><div class="card"><h2>เลือกหัวข้อวิเคราะห์</h2><p class="hint">เลือกได้หลายข้อ ระบบจะสร้างคำสั่งให้ ChatGPT ค้นหาคู่ตามเกณฑ์ที่เลือก</p><div class="checks" id="criteria">
+<section id="search"><div class="card"><h2>เชื่อม API-Football โดยตรง</h2><p class="hint">ดึงโปรแกรมแข่งจากผู้ให้บริการข้อมูลฟุตบอลโดยตรง ใช้ API Key ฟรีของคุณ คีย์จะเก็บในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ถูกบันทึกลง GitHub</p><label>API Key</label><input id="apiKey" type="password" autocomplete="off" placeholder="วาง API-Football key ที่นี่"><div class="grid"><button class="btn secondary" id="saveApiKey">บันทึก API Key</button><button class="btn secondary" id="forgetApiKey">ลบ API Key</button></div><p class="hint">สมัครรับคีย์ฟรี: <a href="https://dashboard.api-football.com/register" target="_blank" rel="noopener">API-Football Dashboard</a> · โควตาฟรี 100 requests/วัน ตามแพ็กเกจปัจจุบัน</p><button class="btn primary" id="loadFixtures">ดึงโปรแกรมแข่งจาก API ตามวันที่เลือก</button><div id="apiStatus" class="hint">ยังไม่ได้เชื่อม API</div><div id="apiFixtures"></div></div><div class="card"><h2>ข้อมูลอัตโนมัติจาก GitHub Actions</h2><p class="hint">ระบบจะอ่าน snapshot ล่าสุดที่ GitHub Actions อัปเดตทุก 6 ชั่วโมง โดยไม่ต้องใช้ API Key ในหน้าเว็บ</p><button class="btn primary" id="loadSnapshot">โหลดข้อมูลล่าสุด</button><div id="snapshotStatus" class="hint">ยังไม่ได้โหลดข้อมูลอัตโนมัติ</div><div id="snapshotMatches"></div><button class="btn secondary" id="copySnapshotPrompt" disabled>คัดลอกข้อมูลพร้อมคำสั่งให้ GPT วิเคราะห์</button><p class="hint">ข้อมูลราคาเป็นราคาก่อนแข่งที่ API มีให้ ไม่ใช่ราคาสดทุกวินาที และอาจไม่มีครบทุกคู่</p></div><div class="card"><h2>วิเคราะห์และสรุปผลในเว็บ</h2><p class="hint">ใช้ฟอร์ม 5 นัดล่าสุดที่ดึงได้ + Poisson model + ราคาตลาดที่มีใน API คำนวณในอุปกรณ์นี้ ไม่เรียก GPT API</p><button class="btn primary" id="runLocalAnalysis" disabled>วิเคราะห์คู่ที่โหลดมา</button><div id="analysisStatus" class="hint">โหลด snapshot ก่อนเริ่มวิเคราะห์</div><div id="analysisResults"></div></div><div class="card"><h2>เลือกหัวข้อวิเคราะห์</h2><p class="hint">เลือกได้หลายข้อ ระบบจะสร้างคำสั่งให้ ChatGPT ค้นหาคู่ตามเกณฑ์ที่เลือก</p><div class="checks" id="criteria">
 <label class="check"><input type="checkbox" value="ฟอร์ม 5 นัดล่าสุด" checked>ฟอร์ม 5 นัดล่าสุด</label><label class="check"><input type="checkbox" value="สถิติยิงและเสียประตู" checked>สถิติยิงและเสียประตู</label><label class="check"><input type="checkbox" value="สถิติพบกัน H2H" >สถิติพบกัน H2H</label><label class="check"><input type="checkbox" value="ผู้เล่นบาดเจ็บ/ติดโทษแบน" checked>ผู้เล่นบาดเจ็บ/ติดโทษแบน</label><label class="check"><input type="checkbox" value="แรงจูงใจและตารางคะแนน" >แรงจูงใจและตารางคะแนน</label><label class="check"><input type="checkbox" value="ฟอร์มเหย้า/เยือน" >ฟอร์มเหย้า/เยือน</label><label class="check"><input type="checkbox" value="สถิติสูงต่ำและ BTTS" >สถิติสูงต่ำและ BTTS</label><label class="check"><input type="checkbox" value="โปรแกรมแข่งและความล้า" >โปรแกรมแข่งและความล้า</label><label class="check"><input type="checkbox" value="สภาพอากาศและสนาม" >สภาพอากาศและสนาม</label><label class="check"><input type="checkbox" value="แนวโน้มราคา (ถ้าตรวจสอบได้)" >แนวโน้มราคา (ถ้าตรวจสอบได้)</label>
 </div><div class="grid"><div><label>วันที่แข่ง</label><input id="date" type="date"></div><div><label>จำนวนคู่สูงสุด</label><select id="limit"><option>3</option><option selected>5</option><option>7</option><option>10</option></select></div></div><label>ลีกที่สนใจ (เว้นว่าง = ทุกลีก)</label><input id="leagues" placeholder="ทุกลีก / Premier League"><label>เงื่อนไขเพิ่ม</label><textarea id="extra" placeholder="เช่น เอาเฉพาะคู่ที่ยังไม่เริ่มและข้อมูลครบ"></textarea><button class="btn primary" id="build">สร้างคำสั่งค้นหาคู่แนะนำ</button><div id="promptBox" class="hidden"><label>คำสั่งที่สร้างแล้ว</label><textarea id="prompt" readonly></textarea><button class="btn secondary" id="copyPrompt">คัดลอกคำสั่ง</button></div></div>
 <div class="card"><h2>นำผลจาก ChatGPT เข้าระบบ</h2><p class="hint">หลัง ChatGPT ค้นหาและคัดคู่แล้ว ให้วางคำตอบไว้ที่นี่</p><textarea id="importText" placeholder="วางรายชื่อคู่แนะนำและเหตุผลจาก ChatGPT"></textarea><button class="btn primary" id="import">บันทึกคู่แนะนำ</button></div></section>
@@ -62,6 +62,7 @@ function renderSnapshot(){
  }).join(""):"<p class='hint'>ไม่พบคู่ที่ยังไม่เริ่มตามตัวกรอง</p>";
  $("snapshotStatus").textContent="อัปเดตล่าสุด "+(latestSnapshot.fetched_at||"ไม่ทราบเวลา")+" · "+(latestSnapshot.fixtures||[]).length+" คู่ · ราคา "+(latestSnapshot.odds||[]).length+" รายการ · โควตาคงเหลือ "+(latestSnapshot.quota_remaining??"ไม่ระบุ")+" · "+(latestSnapshot.errors||[]).length+" ข้อผิดพลาด";
  $("copySnapshotPrompt").disabled=rows.length===0;
+ $("runLocalAnalysis").disabled=rows.length===0;
  window.snapshotPromptData={rows};
 }
 $("loadSnapshot").onclick=async()=>{
@@ -86,6 +87,96 @@ $("copySnapshotPrompt").onclick=()=>{
 };
 $("leagues").addEventListener("change",()=>{if(latestSnapshot)renderSnapshot()});
 $("limit").addEventListener("change",()=>{if(latestSnapshot)renderSnapshot()});
+
+
+function poissonProb(lambda,k){let p=Math.exp(-lambda),sum=p;for(let i=1;i<=k;i++){p*=lambda/i;sum+=p}return p}
+function poissonTable(lambda,max=9){let a=[Math.exp(-lambda)];for(let i=1;i<=max;i++)a.push(a[i-1]*lambda/i);return a}
+function getTeamForm(teamId){
+ let rows=latestSnapshot?.team_form?.[String(teamId)]||[];
+ let gf=0,ga=0,n=0;
+ for(const m of rows){
+  const goals=m.goals||{},teams=m.teams||{};
+  if(goals.home==null||goals.away==null)continue;
+  if(Number(teams.home?.id)===Number(teamId)){gf+=goals.home;ga+=goals.away;n++}
+  else if(Number(teams.away?.id)===Number(teamId)){gf+=goals.away;ga+=goals.home;n++}
+ }
+ return n?{gf:gf/n,ga:ga/n,n}:null;
+}
+function marketOddsFor(fixtureId){
+ const row=(latestSnapshot?.odds||[]).find(o=>Number(o.fixture?.id||o.fixture_id||o.fixtureId)===Number(fixtureId));
+ if(!row)return {};
+ const out={};
+ for(const book of (row.bookmakers||[])){
+  for(const bet of (book.bets||[])){
+   const name=(bet.name||"").toLowerCase();
+   for(const val of (bet.values||[])){
+    const label=(val.value||"").toLowerCase(),odd=Number(val.odd);
+    if(!(odd>1))continue;
+    if(name.includes("match winner")||name==="1x2"){
+      if(label==="home")out.home=odd;else if(label==="draw")out.draw=odd;else if(label==="away")out.away=odd;
+    }
+    if(name.includes("over/under")||name.includes("goals over/under")||name.includes("total goals")){
+      const m=label.match(/(over|under)\s*(\d+(?:\.\d+)?)/i);
+      if(m){const key=m[1].toLowerCase()+"_"+m[2];out[key]=odd;}
+    }
+   }
+  }
+ }
+ return out;
+}
+function normalizedImplied(odds){
+ const vals=odds.map(x=>1/x),sum=vals.reduce((a,b)=>a+b,0);
+ return sum?vals.map(x=>x/sum):[];
+}
+function modelForFixture(match){
+ const f=match.fixture||{},teams=match.teams||{},home=teams.home||{},away=teams.away||{};
+ const hf=getTeamForm(home.id),af=getTeamForm(away.id);
+ if(!hf||!af||hf.n<3||af.n<3)return {match,skip:"ข้อมูลฟอร์มย้อนหลังไม่ครบ (ต้องมีอย่างน้อย 3 นัดต่อทีม)"};
+ // Blend attack output with opponent defensive allowance; small home adjustment is explicit.
+ const lh=Math.max(.15,Math.min(4.0,((hf.gf+af.ga)/2)*1.06));
+ const la=Math.max(.15,Math.min(4.0,((af.gf+hf.ga)/2)*.96));
+ const hp=poissonTable(lh),ap=poissonTable(la);
+ let homeWin=0,draw=0,awayWin=0,over15=0,over25=0,under25=0,under35=0,btts=0;
+ for(let i=0;i<hp.length;i++)for(let j=0;j<ap.length;j++){
+  const p=hp[i]*ap[j],total=i+j;
+  if(i>j)homeWin+=p;else if(i===j)draw+=p;else awayWin+=p;
+  if(total>=2)over15+=p;if(total>=3)over25+=p;if(total<=2)under25+=p;if(total<=3)under35+=p;
+  if(i>0&&j>0)btts+=p;
+ }
+ const odds=marketOddsFor(f.id);
+ const candidates=[];
+ const add=(label,prob,odd)=>{if(odd&&odd>1){const implied=1/odd,edge=prob-implied,ev=prob*odd-1;candidates.push({label,prob,odd,implied,edge,ev})}};
+ add("เจ้าบ้านชนะ",homeWin,odds.home);add("เสมอ",draw,odds.draw);add("ทีมเยือนชนะ",awayWin,odds.away);
+ add("สูง 2.5",over25,odds.over_2.5);add("ต่ำ 2.5",under25,odds.under_2.5);
+ candidates.sort((a,b)=>b.ev-a.ev);
+ const best=candidates[0]||null;
+ const value=best&&best.edge>=.04&&best.ev>0;
+ const risk=!best?"AVOID":value&&best.edge>=.08?"MEDIUM":"HIGH";
+ return {match,home,away,hf,af,lh,la,homeWin,draw,awayWin,over15,over25,under25,under35,btts,odds,best,value,risk,score:lh.toFixed(1)+"-"+la.toFixed(1)};
+}
+function pct(x){return (100*x).toFixed(1)+"%"}
+function renderLocalAnalysis(){
+ if(!latestSnapshot)return;
+ const q=v("leagues").toLocaleLowerCase(),cap=Math.max(1,parseInt(v("limit"),10)||5);
+ const matches=(latestSnapshot.fixtures||[]).filter(x=>["NS","TBD"].includes(x.fixture?.status?.short))
+ .filter(x=>!q||((x.league?.name||"")+" "+(x.league?.country||"")).toLocaleLowerCase().includes(q)).slice(0,cap);
+ const results=matches.map(modelForFixture);
+ const analyzed=results.filter(x=>!x.skip);
+ const picks=analyzed.filter(x=>x.value).sort((a,b)=>(b.best?.ev||0)-(a.best?.ev||0)).slice(0,5);
+ $("analysisStatus").textContent="วิเคราะห์ได้ "+analyzed.length+" / "+matches.length+" คู่ · ผ่านเกณฑ์ Value "+picks.length+" คู่ · โมเดล Poisson จากฟอร์มล่าสุด";
+ let html="";
+ if(picks.length){
+  html+='<h3>คู่ที่ผ่านเกณฑ์ Value</h3>'+picks.map((x,i)=>{
+   const f=x.match.fixture||{},when=f.date?new Date(f.date).toLocaleString("th-TH",{timeZone:"Asia/Bangkok",dateStyle:"short",timeStyle:"short"}):"";
+   return '<div class="match"><span class="tag">VALUE PICK '+(i+1)+' · '+x.risk+'</span><b>'+esc(x.home.name)+' vs '+esc(x.away.name)+'</b><div class="muted">'+esc(when)+' · คาดสกอร์ '+x.score+'</div><div>เลือก: <b>'+esc(x.best.label)+'</b> · โมเดล '+pct(x.best.prob)+' · ราคา '+x.best.odd.toFixed(2)+'</div><div class="muted">Edge '+(x.best.edge*100).toFixed(1)+' จุดเปอร์เซ็นต์ · EV '+(x.best.ev*100).toFixed(1)+'% · ความเสี่ยง '+x.risk+'</div><div class="muted">1X2: '+pct(x.homeWin)+' / '+pct(x.draw)+' / '+pct(x.awayWin)+' · O2.5 '+pct(x.over25)+' · U3.5 '+pct(x.under35)+' · BTTS '+pct(x.btts)+'</div><div class="muted">ฟอร์ม 5 นัดที่มี: '+x.home.name+' GF/GA '+x.hf.gf.toFixed(2)+'/'+x.hf.ga.toFixed(2)+'; '+x.away.name+' '+x.af.gf.toFixed(2)+'/'+x.af.ga.toFixed(2)+'</div></div>';
+  }).join("");
+ }else html+='<p class="hint">ไม่มีคู่ที่ผ่านเกณฑ์ Value Bet ในชุดข้อมูลนี้ — NO BET</p>';
+ const skipped=results.filter(x=>x.skip);
+ if(skipped.length)html+='<h3>คู่ที่ยังประเมินไม่ได้</h3>'+skipped.map(x=>'<div class="match">'+esc(x.match.teams?.home?.name||"?")+' vs '+esc(x.match.teams?.away?.name||"?")+'<div class="muted">'+esc(x.skip)+'</div></div>').join("");
+ html+='<p class="hint">ข้อจำกัด: ใช้ค่าเฉลี่ยประตู 5 นัดล่าสุด ไม่ได้ปรับความแข็งแกร่งคู่แข่ง, รายชื่อจริง, อาการบาดเจ็บ หรือแท็กติก โมเดลนี้เป็นเครื่องมือคัดกรอง ไม่ใช่คำรับประกันผล ราคาที่ไม่มีจาก API จะไม่ถูกสมมติขึ้น</p>';
+ $("analysisResults").innerHTML=html;
+}
+$("runLocalAnalysis").onclick=renderLocalAnalysis;
 
 if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});render();
 </script></body></html>
