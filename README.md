@@ -27,7 +27,7 @@
 
 
 ## Automated data refresh (free setup)
-The repository includes a GitHub Actions workflow that refreshes today's and tomorrow's fixtures, available pre-match odds, and last-five-match form for up to 16 teams every 12 hours. This is normally up to 20 requests per run (about 40/day), within the stated 100 requests/day free quota, though API coverage and actual responses can vary.
+The repository includes a GitHub Actions workflow that refreshes today's and tomorrow's fixtures and available pre-match odds, retrieves up to five completed matches for up to 16 teams using a date range, and enriches a five-fixture shortlist with statistics, injuries, predictions and lineups. Estimated usage is up to 40 requests per run / 80 per day at two runs, leaving a buffer under the listed 100 requests/day Free quota. Actual availability varies by competition and kickoff timing.
 
 ### One-time setup on iPhone
 1. Open the repository: https://github.com/Demo78910/lite-football-scout
@@ -42,4 +42,4 @@ The public snapshot will be written to `data/football.json`. The web app reads i
 - API-Football Free currently lists 100 requests/day; the workflow can use up to 20 calls per run and runs twice daily (typically up to 40 calls/day).
 - Pre-match odds are not guaranteed for every fixture or league. API-Football documents odds refreshes about every 3 hours and coverage varying by competition/bookmaker.
 - Thscore99 is a secondary manual verification source; this workflow does not scrape it. Automated scraping may be blocked or prohibited by the site.
-- The in-app model is a lightweight Poisson screening model based on the latest five completed matches available for each team. The Free-plan form fetch avoids the unsupported `last` query parameter and filters completed matches from a date range. It is not a full professional model: it does not adjust for opponent strength, confirmed lineups, injuries, tactical matchups or weather. Picks require odds and a positive model edge; missing data leads to NO BET.
+- The Data Center can filter fixtures by Bangkok date, league/country and display count. It shows form coverage and whether detailed statistics, injuries, predictions and lineups were returned for each enriched fixture. The Free-plan form fetch avoids the unsupported `last` query parameter and filters completed matches from a 120-day date range. The five-fixture detail shortlist is intentionally limited to protect the daily quota. The in-app model remains a lightweight Poisson screening model based on goals from the latest five completed matches available for each team. It is not a full professional model: it does not adjust for opponent strength, confirmed lineups, injuries, tactical matchups or weather. Picks require odds and a positive model edge; missing data leads to NO BET.
