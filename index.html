@@ -145,9 +145,11 @@ function modelForFixture(match){
  }
  const odds=marketOddsFor(f.id);
  const candidates=[];
- const add=(label,prob,odd)=>{if(odd&&odd>1){const implied=1/odd,edge=prob-implied,ev=prob*odd-1;candidates.push({label,prob,odd,implied,edge,ev})}};
- add("เจ้าบ้านชนะ",homeWin,odds.home);add("เสมอ",draw,odds.draw);add("ทีมเยือนชนะ",awayWin,odds.away);
- add("สูง 2.5",over25,odds.over_2.5);add("ต่ำ 2.5",under25,odds.under_2.5);
+ const add=(label,prob,odd,fairImplied)=>{if(odd&&odd>1&&fairImplied!=null){const edge=prob-fairImplied,ev=prob*odd-1;candidates.push({label,prob,odd,implied:fairImplied,edge,ev})}};
+ const oneXKeys=["home","draw","away"],oneXOdds=oneXKeys.map(k=>odds[k]);
+ if(oneXOdds.every(x=>x&&x>1)){const fair=normalizedImplied(oneXOdds);add("เจ้าบ้านชนะ",homeWin,odds.home,fair[0]);add("เสมอ",draw,odds.draw,fair[1]);add("ทีมเยือนชนะ",awayWin,odds.away,fair[2]);}
+ const ouOdds=[odds.over_2.5,odds.under_2.5];
+ if(ouOdds.every(x=>x&&x>1)){const fair=normalizedImplied(ouOdds);add("สูง 2.5",over25,odds.over_2.5,fair[0]);add("ต่ำ 2.5",under25,odds.under_2.5,fair[1]);}
  candidates.sort((a,b)=>b.ev-a.ev);
  const best=candidates[0]||null;
  const value=best&&best.edge>=.04&&best.ev>0;
